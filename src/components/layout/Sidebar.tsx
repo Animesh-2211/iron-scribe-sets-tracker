@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { BarChart2, Dumbbell, Calendar, Settings, LayoutDashboard } from 'lucide-react';
+import { BarChart2, Dumbbell, Calendar, Settings, LayoutDashboard, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Sidebar as SidebarComponent,
@@ -14,7 +14,11 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarTrigger,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const navItems = [
   {
@@ -45,11 +49,18 @@ const navItems = [
 ];
 
 const Sidebar = () => {
+  const { user, signOut } = useAuth();
+  const userInitials = user?.email ? user.email.substring(0, 2).toUpperCase() : "UI";
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <SidebarComponent>
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <Dumbbell className="h-6 w-6 text-gym-purple" />
+          <Dumbbell className="h-6 w-6 text-primary" />
           <span className="font-bold text-xl">IronScribe</span>
         </div>
         <SidebarTrigger className="ml-auto" />
@@ -80,6 +91,33 @@ const Sidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="px-3 py-4 border-t">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3 px-1">
+            <Avatar className="h-9 w-9">
+              <AvatarFallback className="bg-primary/10 text-primary">
+                {userInitials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">
+                {user?.email ? user.email.split('@')[0] : 'User'}
+              </span>
+              <span className="text-xs text-muted-foreground truncate max-w-[140px]">
+                {user?.email}
+              </span>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full justify-start"
+            onClick={handleSignOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Sign Out</span>
+          </Button>
+        </div>
+      </SidebarFooter>
     </SidebarComponent>
   );
 };
