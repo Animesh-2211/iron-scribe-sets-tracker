@@ -42,6 +42,24 @@ const Auth = () => {
     };
   }, [navigate]);
 
+  // Check URL parameters for OAuth redirect
+  useEffect(() => {
+    // This handles the hash fragment from OAuth redirects
+    const handleRedirect = async () => {
+      if (window.location.hash) {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (data?.session) {
+          // Clear the URL hash and navigate to home
+          window.history.replaceState(null, '', window.location.pathname);
+          navigate('/');
+        }
+      }
+    };
+    
+    handleRedirect();
+  }, [navigate]);
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -125,7 +143,7 @@ const Auth = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/',
+          redirectTo: window.location.origin,
         },
       });
       
