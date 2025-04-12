@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-import { Mail, Lock, User, Google } from "lucide-react";
+import { Mail, Lock, User, Globe } from "lucide-react";
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -213,7 +213,7 @@ const Auth = () => {
                     onClick={handleGoogleSignIn}
                     disabled={loading}
                   >
-                    <Google className="mr-2 h-4 w-4" />
+                    <Globe className="mr-2 h-4 w-4" />
                     Google
                   </Button>
                 </CardFooter>
@@ -293,7 +293,7 @@ const Auth = () => {
                     onClick={handleGoogleSignIn}
                     disabled={loading}
                   >
-                    <Google className="mr-2 h-4 w-4" />
+                    <Globe className="mr-2 h-4 w-4" />
                     Google
                   </Button>
                 </CardFooter>
