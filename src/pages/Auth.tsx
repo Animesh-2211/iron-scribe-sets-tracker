@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-import { Mail, Lock, User, Globe } from "lucide-react";
+import { Mail, Lock, User } from "lucide-react";
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -40,24 +40,6 @@ const Auth = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
-
-  // Check URL parameters for OAuth redirect
-  useEffect(() => {
-    // This handles the hash fragment from OAuth redirects
-    const handleRedirect = async () => {
-      if (window.location.hash) {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (data?.session) {
-          // Clear the URL hash and navigate to home
-          window.history.replaceState(null, '', window.location.pathname);
-          navigate('/');
-        }
-      }
-    };
-    
-    handleRedirect();
   }, [navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -136,29 +118,6 @@ const Auth = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      
-      if (error) throw error;
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to sign in with Google",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-b from-background to-muted/30">
       <div className="w-full max-w-md">
@@ -212,27 +171,9 @@ const Auth = () => {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="flex flex-col gap-4">
+                <CardFooter>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
-                  </Button>
-                  <div className="relative w-full">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-muted-foreground">or continue with</span>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={handleGoogleSignIn}
-                    disabled={loading}
-                  >
-                    <Globe className="mr-2 h-4 w-4" />
-                    Google
                   </Button>
                 </CardFooter>
               </form>
@@ -292,27 +233,9 @@ const Auth = () => {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="flex flex-col gap-4">
+                <CardFooter>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Creating account..." : "Sign Up"}
-                  </Button>
-                  <div className="relative w-full">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-muted-foreground">or continue with</span>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={handleGoogleSignIn}
-                    disabled={loading}
-                  >
-                    <Globe className="mr-2 h-4 w-4" />
-                    Google
                   </Button>
                 </CardFooter>
               </form>
