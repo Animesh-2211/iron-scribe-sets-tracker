@@ -1,16 +1,20 @@
 
-import React from 'react';
-import { SignIn, SignUp } from '@clerk/clerk-react';
+import React, { useEffect } from 'react';
+import { SignIn, SignUp, useAuth } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuthHeader from '@/components/auth/AuthHeader';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { isSignedIn } = useAuth();
   
-  const handleRedirectCallback = () => {
-    navigate('/');
-  };
+  useEffect(() => {
+    // Redirect to dashboard if already signed in
+    if (isSignedIn) {
+      navigate('/', { replace: true });
+    }
+  }, [isSignedIn, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-b from-background to-muted/30">
@@ -26,7 +30,7 @@ const Auth = () => {
           <TabsContent value="login">
             <div className="bg-card rounded-lg border shadow-sm p-6">
               <SignIn 
-                afterSignInUrl="/"
+                fallbackRedirectUrl="/"
                 redirectUrl="/"
                 signUpUrl="/auth?tab=signup"
                 appearance={{
@@ -49,7 +53,7 @@ const Auth = () => {
           <TabsContent value="signup">
             <div className="bg-card rounded-lg border shadow-sm p-6">
               <SignUp 
-                afterSignUpUrl="/"
+                fallbackRedirectUrl="/"
                 redirectUrl="/"
                 signInUrl="/auth?tab=login"
                 appearance={{

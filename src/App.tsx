@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { WorkoutProvider } from "@/contexts/SupabaseWorkoutContext";
-import { useAuth, ClerkLoaded, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { ClerkLoaded, SignedIn, SignedOut, ClerkProvider, useAuth } from '@clerk/clerk-react';
 import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import Workouts from "@/pages/Workouts";
@@ -16,7 +16,6 @@ import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import { useEffect } from "react";
-import { toast } from "@/components/ui/use-toast";
 
 const queryClient = new QueryClient();
 
