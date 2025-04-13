@@ -4,8 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { WorkoutProvider } from "@/contexts/SupabaseWorkoutContext";
-import { ClerkLoaded, SignedIn, SignedOut, ClerkProvider, useAuth } from '@clerk/clerk-react';
+import { WorkoutProvider } from "@/contexts/WorkoutContext";
+import { ClerkLoaded, SignedIn, SignedOut, ClerkProvider } from '@clerk/clerk-react';
 import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import Workouts from "@/pages/Workouts";
@@ -15,7 +15,6 @@ import Calendar from "@/pages/Calendar";
 import Settings from "@/pages/Settings";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
-import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -35,11 +34,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <WorkoutProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <WorkoutProvider>
           <Routes>
             <Route path="/auth" element={
               <ClerkLoaded>
@@ -95,9 +94,9 @@ const App = () => (
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </WorkoutProvider>
+        </WorkoutProvider>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
