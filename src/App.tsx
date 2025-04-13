@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { WorkoutProvider } from "@/contexts/WorkoutContext";
-import { ClerkLoaded, SignedIn, SignedOut, ClerkProvider } from '@clerk/clerk-react';
+import { ClerkLoaded, SignedIn, SignedOut } from '@clerk/clerk-react';
 import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import Workouts from "@/pages/Workouts";
@@ -35,9 +35,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/">
+        <Toaster />
+        <Sonner />
         <WorkoutProvider>
           <Routes>
             <Route path="/auth" element={

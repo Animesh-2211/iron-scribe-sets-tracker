@@ -4,14 +4,18 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import App from './App.tsx'
 import './index.css'
 
-// Use the key from your environment
+// Use the key from your environment 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || "pk_test_bmF0dXJhbC1lZWwtNTkuY2xlcmsuYWNjb3VudHMuZGV2JA";
 
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Clerk Publishable Key");
 }
 
-createRoot(document.getElementById("root")!).render(
+// Make sure we're using the correct DOM element
+const root = document.getElementById("root");
+if (!root) throw new Error("Root element not found");
+
+createRoot(root).render(
   <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
     <App />
   </ClerkProvider>

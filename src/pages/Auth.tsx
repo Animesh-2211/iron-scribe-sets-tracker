@@ -1,27 +1,20 @@
 
-import React, { useEffect } from 'react';
-import { SignIn, SignUp, useAuth } from '@clerk/clerk-react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { SignIn, SignUp } from '@clerk/clerk-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuthHeader from '@/components/auth/AuthHeader';
+import { useSearchParams } from 'react-router-dom';
 
 const Auth = () => {
-  const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') === 'signup' ? 'signup' : 'login';
   
-  useEffect(() => {
-    // Redirect to dashboard if already signed in
-    if (isSignedIn) {
-      navigate('/', { replace: true });
-    }
-  }, [isSignedIn, navigate]);
-
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-b from-background to-muted/30">
       <div className="w-full max-w-md">
         <AuthHeader />
         
-        <Tabs defaultValue="login" className="w-full">
+        <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="grid grid-cols-2 w-full mb-4">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -30,9 +23,8 @@ const Auth = () => {
           <TabsContent value="login">
             <div className="bg-card rounded-lg border shadow-sm p-6">
               <SignIn 
-                fallbackRedirectUrl="/"
                 redirectUrl="/"
-                signUpUrl="/auth?tab=signup"
+                afterSignInUrl="/"
                 appearance={{
                   elements: {
                     rootBox: "w-full",
@@ -53,9 +45,8 @@ const Auth = () => {
           <TabsContent value="signup">
             <div className="bg-card rounded-lg border shadow-sm p-6">
               <SignUp 
-                fallbackRedirectUrl="/"
                 redirectUrl="/"
-                signInUrl="/auth?tab=login"
+                afterSignUpUrl="/"
                 appearance={{
                   elements: {
                     rootBox: "w-full",
