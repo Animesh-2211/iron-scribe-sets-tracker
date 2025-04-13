@@ -1,6 +1,7 @@
+
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './AuthContext';
+import { useAuth as useClerkAuth } from '@clerk/clerk-react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from '@/components/ui/use-toast';
 
@@ -46,12 +47,12 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [currentWorkout, setCurrentWorkout] = useState<Workout | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
+  const { userId } = useClerkAuth();
 
   // Fetch workouts from Supabase when user changes
   useEffect(() => {
     const fetchWorkouts = async () => {
-      if (!user) {
+      if (!userId) {
         setWorkouts([]);
         setCurrentWorkout(null);
         setIsLoading(false);
@@ -63,7 +64,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         const { data, error } = await supabase
           .from('workouts')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -101,11 +102,11 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
     };
 
     fetchWorkouts();
-  }, [user]);
+  }, [userId]);
 
   // Start a new workout
   const startNewWorkout = async (name: string) => {
-    if (!user) {
+    if (!userId) {
       toast({
         title: 'Error',
         description: 'You must be logged in to create a workout',
@@ -128,7 +129,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         .from('workouts')
         .insert({
           id: newWorkout.id,
-          user_id: user.id,
+          user_id: userId,
           name: newWorkout.name,
           date: newWorkout.date.toISOString(),
           is_completed: newWorkout.isCompleted,
@@ -302,7 +303,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
   // Complete workout
   const completeWorkout = async (workoutId: string) => {
-    if (!user) return;
+    if (!userId) return;
     
     try {
       // Update in Supabase
@@ -310,7 +311,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         .from('workouts')
         .update({ is_completed: true })
         .eq('id', workoutId)
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
 
       if (error) throw error;
 
@@ -344,7 +345,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
   // Delete workout
   const deleteWorkout = async (workoutId: string) => {
-    if (!user) return;
+    if (!userId) return;
     
     try {
       // Delete from Supabase
@@ -352,7 +353,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         .from('workouts')
         .delete()
         .eq('id', workoutId)
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
 
       if (error) throw error;
 
