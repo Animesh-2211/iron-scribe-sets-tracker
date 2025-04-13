@@ -1,35 +1,76 @@
 
 import React from 'react';
+import { SignIn, SignUp } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import LoginForm from '@/components/auth/LoginForm';
-import SignUpForm from '@/components/auth/SignUpForm';
-import SessionCheck from '@/components/auth/SessionCheck';
 import AuthHeader from '@/components/auth/AuthHeader';
 
 const Auth = () => {
+  const navigate = useNavigate();
+  
+  const handleRedirectCallback = () => {
+    navigate('/');
+  };
+
   return (
-    <SessionCheck>
-      <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-b from-background to-muted/30">
-        <div className="w-full max-w-md">
-          <AuthHeader />
+    <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-b from-background to-muted/30">
+      <div className="w-full max-w-md">
+        <AuthHeader />
+        
+        <Tabs defaultValue="login" className="w-full">
+          <TabsList className="grid grid-cols-2 w-full mb-4">
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          </TabsList>
           
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid grid-cols-2 w-full mb-4">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login">
-              <LoginForm />
-            </TabsContent>
-            
-            <TabsContent value="signup">
-              <SignUpForm />
-            </TabsContent>
-          </Tabs>
-        </div>
+          <TabsContent value="login">
+            <div className="bg-card rounded-lg border shadow-sm p-6">
+              <SignIn 
+                afterSignInUrl="/"
+                redirectUrl="/"
+                signUpUrl="/auth?tab=signup"
+                appearance={{
+                  elements: {
+                    rootBox: "w-full",
+                    card: "shadow-none p-0 border-0",
+                    headerTitle: "hidden",
+                    headerSubtitle: "hidden",
+                    socialButtonsBlockButton: "bg-white border border-input hover:bg-accent hover:text-accent-foreground",
+                    formButtonPrimary: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-md",
+                    formFieldInput: "bg-background border border-input rounded-md",
+                    footerActionText: "text-muted-foreground",
+                    footerActionLink: "text-primary hover:text-primary/90"
+                  }
+                }}
+              />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="signup">
+            <div className="bg-card rounded-lg border shadow-sm p-6">
+              <SignUp 
+                afterSignUpUrl="/"
+                redirectUrl="/"
+                signInUrl="/auth?tab=login"
+                appearance={{
+                  elements: {
+                    rootBox: "w-full",
+                    card: "shadow-none p-0 border-0",
+                    headerTitle: "hidden",
+                    headerSubtitle: "hidden",
+                    socialButtonsBlockButton: "bg-white border border-input hover:bg-accent hover:text-accent-foreground",
+                    formButtonPrimary: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-md",
+                    formFieldInput: "bg-background border border-input rounded-md",
+                    footerActionText: "text-muted-foreground",
+                    footerActionLink: "text-primary hover:text-primary/90"
+                  }
+                }}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </SessionCheck>
+    </div>
   );
 };
 

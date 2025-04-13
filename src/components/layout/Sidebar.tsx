@@ -16,7 +16,7 @@ import {
   SidebarTrigger,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { useAuth } from '@/contexts/AuthContext';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
@@ -49,8 +49,20 @@ const navItems = [
 ];
 
 const Sidebar = () => {
-  const { user, signOut } = useAuth();
-  const userInitials = user?.email ? user.email.substring(0, 2).toUpperCase() : "UI";
+  const { user } = useUser();
+  const { signOut } = useClerk();
+  const userInitials = user?.firstName 
+    ? user.firstName.substring(0, 1) + (user.lastName ? user.lastName.substring(0, 1) : '')
+    : user?.emailAddresses[0]?.emailAddress
+      ? user.emailAddresses[0].emailAddress.substring(0, 2).toUpperCase()
+      : "UI";
+
+  const primaryEmail = user?.emailAddresses[0]?.emailAddress;
+  const displayName = user?.firstName 
+    ? `${user.firstName} ${user.lastName || ''}`
+    : primaryEmail 
+      ? primaryEmail.split('@')[0] 
+      : 'User';
 
   const handleSignOut = async () => {
     await signOut();
@@ -101,10 +113,10 @@ const Sidebar = () => {
             </Avatar>
             <div className="flex flex-col">
               <span className="text-sm font-medium">
-                {user?.email ? user.email.split('@')[0] : 'User'}
+                {displayName}
               </span>
               <span className="text-xs text-muted-foreground truncate max-w-[140px]">
-                {user?.email}
+                {primaryEmail}
               </span>
             </div>
           </div>
